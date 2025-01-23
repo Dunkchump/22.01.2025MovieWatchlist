@@ -1,34 +1,32 @@
 const inputEl = document.getElementById("input"),
       btnEl = document.getElementById("btn"),
       mainEl = document.getElementById("main");
-      roundBtnEl = document.querySelector(".round-btn");
+      
 
 let imdbArr = []
 let movieByImdb = []
-let watchlist = []
 btnEl.addEventListener("click",getFetch)
 
 mainEl.addEventListener("click", (e) => {
     if (e.target.classList.contains("round-btn")) {
-        // Находим родительский элемент movie-item
         const movieItem = e.target.closest(".movie-item");
         
-        // Создаем объект фильма из данных
         const movieObj = {
             title: movieItem.querySelector(".title").textContent,
             rating: movieItem.querySelector(".imdbID").textContent,
             runtime: movieItem.querySelector(".runtime").textContent,
             poster: movieItem.querySelector(".poster").src,
             genre: movieItem.querySelector(".genra").textContent,
+            plot: movieItem.querySelector(".plot").textContent
             
         };
-        
-        // Добавляем в массив
-        watchlist.push(movieObj);
-        
-        console.log(watchlist); // Показать текущий массив
+        let watchlist = JSON.parse(localStorage.getItem("watchlist")) || []
+        watchlist.unshift(movieObj);
+        localStorage.setItem('watchlist', JSON.stringify(watchlist));
+       
     }
 });
+
 
 function getFetch(){
     fetch(`http://www.omdbapi.com/?apikey=92022b4c&s=${inputEl.value}`)
@@ -39,7 +37,7 @@ function getFetch(){
 }
 
 function render(arr){
-    console.log(arr)
+    
     const listOfFilms = arr.map(movie => {
         return `
             <div class="movie-item">
